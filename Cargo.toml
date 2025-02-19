@@ -9,7 +9,7 @@ license = "MIT"
 
 keywords = ["udp", "networking", "multiplayer"]
 categories = ["network-programming"]
-repository = "https://github.com/Cobrand/reliudp"
+repository = "https://github.com/Vermeil-Soft/reliudp"
 
 [target.'cfg(windows)'.dependencies]
 windows = {version = "0.48", features = ["Win32_Networking_WinSock", "Win32_Foundation", "Win32_System_IO"]}
