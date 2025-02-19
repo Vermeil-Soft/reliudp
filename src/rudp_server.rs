@@ -119,6 +119,11 @@ impl RUdpServer {
                 Err(err) => {
                     match err.kind() {
                         IoErrorKind::WouldBlock => { done = true },
+                        // Windows may send ConnectionReset errors, even for UDP:
+                        // On a UDP-datagram socket this error indicates a previous
+                        // send operation resulted in an ICMP Port Unreachable message.
+                        // https://stackoverflow.com/questions/15228272/what-would-cause-a-connectionreset-on-an-udp-socket
+                        IoErrorKind::ConnectionReset => { continue; },
                         err_kind => {
                             panic!("received other unexpected net error {:?}", err_kind)
                         }

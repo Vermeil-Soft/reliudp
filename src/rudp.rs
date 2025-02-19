@@ -424,7 +424,9 @@ impl RUdpSocket {
     pub fn send_end(&mut self) -> ::std::io::Result<()> {
         let p: Packet<Box<[u8]>> = Packet::End(self.next_local_seq_id.saturating_sub(1));
         let udp_packet = UdpPacket::from(&p);
-        self.send_udp_packet(&udp_packet)
+        self.send_udp_packet(&udp_packet)?;
+        self.set_status(SocketStatus::TerminateSent(self.cached_now));
+        Ok(())
     }
 
     /// Terminates the socket, by sending a "Ended" event to the remote.
@@ -441,7 +443,9 @@ impl RUdpSocket {
     pub (self) fn send_abort(&mut self) -> ::std::io::Result<()> {
         let p: Packet<Box<[u8]>> = Packet::Abort(self.next_local_seq_id.saturating_sub(1));
         let udp_packet = UdpPacket::from(&p);
-        self.send_udp_packet(&udp_packet)
+        self.send_udp_packet(&udp_packet)?;
+        self.set_status(SocketStatus::TerminateSent(self.cached_now));
+        Ok(())
     }
 
     /// Add a packet to a queue, to be processed later.
@@ -511,7 +515,7 @@ impl RUdpSocket {
         }
         if self.cached_now >= self.last_received_message + self.timeout_delay && !self.socket.status().is_finished() {
             let ago: Duration = self.cached_now - self.last_received_message;
-            log::warn!("socket {} timed out: last_received_message was {}s ago", self.remote_addr(), ago.as_secs_f32());
+            log::warn!("socket {} timed out: last_received_message was {:.01}s ago", self.remote_addr(), ago.as_secs_f32());
             self.set_status(SocketStatus::TimeoutError(self.cached_now));
         }
         for (seq_id, ack) in acks_to_send {
