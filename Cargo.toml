@@ -1,5 +1,5 @@
 [package]
-authors = ["Cobrand <cobrandw@gmail.com>"]
+authors = ["Andres Franco <andres.franco@vermeilsoft.com>"]
 name = "reliudp"
 version = "0.3.0"
 edition = "2021"
