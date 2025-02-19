@@ -1,6 +1,7 @@
 use crate::rudp::*;
 use std::net::{SocketAddr, UdpSocket, ToSocketAddrs};
 use std::io::{ErrorKind as IoErrorKind, Result as IoResult};
+use std::os::windows::prelude::AsRawSocket;
 use std::sync::Arc;
 use crate::udp_packet::UdpPacket;
 use std::time::Duration;
@@ -33,6 +34,10 @@ impl RUdpServer {
     /// to bind your address to the internet.
     pub fn new<A: ToSocketAddrs>(local_addr: A) -> IoResult<RUdpServer> {
         let udp_socket = Arc::new(UdpSocket::bind(local_addr)?);
+
+        #[cfg(target_os = "windows")] {
+            crate::windows::disable_virtual_udp_circuit(udp_socket.as_ref());
+        }
         udp_socket.set_nonblocking(true)?;
         Ok(RUdpServer {
             remotes: HashMap::default(),

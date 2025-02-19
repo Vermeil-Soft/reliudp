@@ -274,6 +274,9 @@ impl RUdpSocket {
         let remote_addr = remote_addr.to_socket_addrs()?.next().unwrap();
 
         let udp_socket = Arc::new(UdpSocket::bind("0.0.0.0:0")?);
+        #[cfg(target_os = "windows")] {
+            crate::windows::disable_virtual_udp_circuit(udp_socket.as_ref());
+        }
         udp_socket.set_nonblocking(true)?;
         let local_addr = udp_socket.local_addr()?;
 
