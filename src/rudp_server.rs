@@ -1,7 +1,6 @@
 use crate::rudp::*;
 use std::net::{SocketAddr, UdpSocket, ToSocketAddrs};
 use std::io::{ErrorKind as IoErrorKind, Result as IoResult};
-use std::os::windows::prelude::AsRawSocket;
 use std::sync::Arc;
 use crate::udp_packet::UdpPacket;
 use std::time::Duration;
