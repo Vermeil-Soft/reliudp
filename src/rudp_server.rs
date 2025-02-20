@@ -113,9 +113,8 @@ impl RUdpServer {
         Ok(())
     }
 
-    /// Returns a copy of the Arc holding the UdpSocket.
-    pub fn udp_socket(&self) -> Arc<UdpSocket> {
-        Arc::clone(&self.udp_socket)
+    pub fn raw(&self) -> &UdpSocket {
+        &self.udp_socket
     }
 
     pub (crate) fn process_all_incoming(&mut self) -> IoResult<()> {

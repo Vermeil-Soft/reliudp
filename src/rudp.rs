@@ -392,6 +392,10 @@ impl RUdpSocket {
             self.events.push_back(event);
         }
     }
+
+    pub fn raw(&self) -> &std::net::UdpSocket {
+        &self.socket.udp_socket
+    }
     
     #[inline]
     /// Send data to the remote.
